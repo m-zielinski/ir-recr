@@ -1,7 +1,6 @@
 class Serializer
   def initialize(object)
     @object = object
-    @@object = @object
   end
 
   def serialize
@@ -10,14 +9,10 @@ class Serializer
     end.to_h
   end
 
-  def self.attribute(name)
+  def self.attribute(name, &block)
     self.define_method(name) do
-      block_given? ? yield : object.send(name)
+      block_given? ? self.instance_exec(&block): object.send(name)
     end
-  end
-
-  def self.object
-    @@object
   end
 
   private
